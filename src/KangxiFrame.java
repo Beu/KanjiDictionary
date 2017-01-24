@@ -9,11 +9,11 @@ public class KangxiFrame extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	final static int DEFAULT_FONT_SIZE = 24;
-	int fontSize = DEFAULT_FONT_SIZE;
-	
-	KanjiDictionary parent;
-	
+	private final static int DEFAULT_FONT_SIZE = 24;
+	private int fontSize = DEFAULT_FONT_SIZE;
+
+	private KanjiDictionary parent;
+
 	public KangxiFrame(KanjiDictionary parent) {
 		super("康熙字典",
 				true /* resizable */,
@@ -23,8 +23,8 @@ public class KangxiFrame extends JInternalFrame {
 		this.parent = parent;
 	}
 
-	int codePoint = 0;
-	
+	private int codePoint = 0;
+
 	public void updateFonts() throws java.io.IOException {
 		if (codePoint != 0) {
 			setCharacter(codePoint);
@@ -35,7 +35,7 @@ public class KangxiFrame extends JInternalFrame {
 		HashMap<String, Object> infoMap = (HashMap<String, Object>)
 				parent.kangxi.characterMap.get(new Integer(codePoint));
 		this.codePoint = codePoint;
-		
+	
 		if (infoMap == null) {
 			JPanel panel = new JPanel();
 			JLabel label = new JLabel(String.format("information of U+%X was not found.", codePoint));
@@ -50,7 +50,7 @@ public class KangxiFrame extends JInternalFrame {
 			}
 			return;
 		}
-		String sData = (String)infoMap.get("kangxi");
+		String sData = (String) infoMap.get("kangxi");
 
 		JTextPane textPane = new JTextPane();
 		textPane.setMargin(new Insets(8, 8, 8, 8));
@@ -59,8 +59,7 @@ public class KangxiFrame extends JInternalFrame {
 		StyleConstants.setFontSize(attributeSet0, fontSize);
 		StyleConstants.setLineSpacing(attributeSet0, (float)(2.0 / 5.0));
 		textPane.setParagraphAttributes(attributeSet0, true);
-		SimpleAttributeSet[] attributeSets
-				= new SimpleAttributeSet[parent.cFonts.length];
+		SimpleAttributeSet[] attributeSets = new SimpleAttributeSet[parent.cFonts.length];
 		for (int i = 0;  i < attributeSets.length;  ++i) {
 			attributeSets[i] = new SimpleAttributeSet(attributeSet0);
 			StyleConstants.setFontFamily(attributeSets[i], parent.cFonts[i].getFamily());

@@ -15,11 +15,11 @@ import kanjiData.Unihan;
 
 public class KanjiDictionary implements ActionListener {
 
-	final static String APPLICATION_NAME = "字典";
-	final static String APPLICATION_VERSION = "0.018";
-	final static String FONTS_FOLDER = "data/fonts";
-	
-	final static String[] DEFAULT_C_FONTS = {
+	private final static String APPLICATION_NAME = "字典";
+	private final static String APPLICATION_VERSION = "0.018";
+	private final static String FONTS_FOLDER = "data/fonts";
+
+	private final static String[] DEFAULT_C_FONTS = {
 		"MingLiU",
 		"MingLiU-ExtB",
 		"MingLiU_HKSCS",
@@ -31,11 +31,11 @@ public class KanjiDictionary implements ActionListener {
 		"ZYSongKX-16_24_32_52",
 		"DFKai-SB",
 	};
-	final static String[] DEFAULT_J_FONTS = {
+	private final static String[] DEFAULT_J_FONTS = {
 		"ＭＳ Ｐ明朝",
 		"MS PMincho",
 	};
-	final static String[] DEFAULT_MISC_FONTS = {
+	private final static String[] DEFAULT_MISC_FONTS = {
 		"Arial Unicode MS",
 	};
 
@@ -63,21 +63,20 @@ public class KanjiDictionary implements ActionListener {
 	public Jigen jigen;
 	public Kangxi kangxi;
 	public Unihan unihan;
-	
+
 	public Font[] cFonts;
 	public Font[] jFonts;
 	public Font[] mFonts;
-	
-	JFrame frame;
-	SelectingFrame selectingFrame;
-	CharacterFrame characterFrame;
-	CodesFrame codesFrame;
-	JigenFrame jigenFrame;
-	KangxiFrame kangxiFrame;
-	UnihanFrame unihanFrame;
 
-	public KanjiDictionary(String[] sArgs)
-			throws java.io.IOException {
+	private JFrame frame;
+	private SelectingFrame selectingFrame;
+	private CharacterFrame characterFrame;
+	private CodesFrame codesFrame;
+	private JigenFrame jigenFrame;
+	private KangxiFrame kangxiFrame;
+	private UnihanFrame unihanFrame;
+
+	public KanjiDictionary(String[] sArgs) throws java.io.IOException {
 
 		if (System.getProperty("KanjiDictionary.jar") != null
 				&& System.getProperty("KanjiDictionary.jar").equals("true")) {
@@ -90,14 +89,14 @@ public class KanjiDictionary implements ActionListener {
 
 		appendInitialFonts();
 		initializeFonts();
-		
+
 		jigen = new Jigen();
 		jigen.getMaps();
 		kangxi = new Kangxi();
 		kangxi.getMaps();
 		unihan = new Unihan();
 		unihan.getMaps();
-		
+
 		frame = new JFrame(APPLICATION_NAME);
 		frame.setPreferredSize(new Dimension(800, 600));
 		{
@@ -149,7 +148,7 @@ public class KanjiDictionary implements ActionListener {
 		frame.setVisible(true);
 	}
 
-	JMenuBar createMenuBar() {
+	private JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		{
 			JMenu menu = new JMenu("Help");
@@ -171,11 +170,12 @@ public class KanjiDictionary implements ActionListener {
 		return menuBar;
 	}
 
-	JDesktopPane createDesktopPane() {
+	private JDesktopPane createDesktopPane() {
 		JDesktopPane desktopPane = new JDesktopPane();
 		return desktopPane;
 	}
-	
+
+	@Override
 	public void actionPerformed(ActionEvent event) {
 		String sCommand = event.getActionCommand();
 		if ("about".equals(sCommand)) {
@@ -200,7 +200,7 @@ public class KanjiDictionary implements ActionListener {
 		}
 	}
 
-	void appendInitialFonts() throws java.io.IOException {
+	private void appendInitialFonts() throws java.io.IOException {
 		File[] files = (new File(FONTS_FOLDER)).listFiles();
 		if (files == null) {
 			return;
@@ -227,7 +227,7 @@ public class KanjiDictionary implements ActionListener {
 		}
 	}
 
-	File directory = null;
+	private File directory = null;
 
 	public void appendFont() throws java.io.IOException {
 		JFileChooser chooser = new JFileChooser();
@@ -283,8 +283,8 @@ public class KanjiDictionary implements ActionListener {
 					JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
-	
-	void initializeFonts() {
+
+	private void initializeFonts() {
 		Font[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
 		
 		ArrayList<Font> cFontList = new ArrayList<Font>();
@@ -341,7 +341,7 @@ public class KanjiDictionary implements ActionListener {
 		}
 		jFonts = jFontList.toArray(new Font[jFontList.size()]);
 	}
-	
+
 	public void setCharacters(int[] codePoints) {
 		selectingFrame.setCharacters(codePoints);
 		try {
@@ -350,9 +350,9 @@ public class KanjiDictionary implements ActionListener {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void selectCharacter(int codePoint) {
-		
+
 		codesFrame.setCharacter(codePoint);
 
 		characterFrame.setCharacter(codePoint);
@@ -361,7 +361,6 @@ public class KanjiDictionary implements ActionListener {
 		} catch (java.beans.PropertyVetoException e) {
 			e.printStackTrace();
 		}
-
 
 		try {
 			jigenFrame.setCharacter(codePoint);
@@ -381,7 +380,7 @@ public class KanjiDictionary implements ActionListener {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void updateFonts() {
 		characterFrame.updateFonts();
 		selectingFrame.updateFonts();
@@ -393,7 +392,7 @@ public class KanjiDictionary implements ActionListener {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void putUnimplementedError() {
 		JOptionPane.showMessageDialog(null,
 				"Sorry, Unimplemented!",

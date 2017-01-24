@@ -5,8 +5,8 @@ public class CodesFrame extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	KanjiDictionary parent;
-	
+	private KanjiDictionary parent;
+
 	public CodesFrame(KanjiDictionary parent) {
 		super("Codes",
 				true /* resizable */,
@@ -16,7 +16,7 @@ public class CodesFrame extends JInternalFrame {
 		this.parent = parent;
 	}
 
-	final static String[] ENCODINGS = {
+	private final static String[] ENCODINGS = {
 		"UTF-32BE", "UTF-16BE", "UTF-8",
 		/* Chinese */
 		"Big5", "Big5-HKSCS", "Cp950",
@@ -35,7 +35,7 @@ public class CodesFrame extends JInternalFrame {
 		"Johab",
 	};
 
-	final static String[] COLUMN_NAMES = {
+	private final static String[] COLUMN_NAMES = {
 		"encoding name",
 		"value"
 	};
@@ -57,8 +57,8 @@ public class CodesFrame extends JInternalFrame {
 					continue;
 				}
 				String s = "";
-				for (int j = 0;  j < bytes.length;  ++j) {
-					s += String.format("%02X", bytes[j] & 0xff);
+				for (byte value: bytes) {
+					s += String.format("%02X", value & 0xff);
 				}
 				data[i][1] = s;
 			} catch (java.io.UnsupportedEncodingException e) {

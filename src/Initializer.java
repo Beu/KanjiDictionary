@@ -11,7 +11,7 @@ public class Initializer {
 	public static void main(String[] sArgs) {
 		new Initializer();
 	}
-	
+
 	public Initializer() {
 		try {
 			KanjiData.deleteDatabase();
@@ -27,7 +27,7 @@ public class Initializer {
 			kangxi.close();
 			kangxi = null;
 			System.out.println("Kangxi read.");
-			
+
 			Unihan unihan = new Unihan();
 			unihan.createMaps();
 			unihan.close();

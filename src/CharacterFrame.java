@@ -8,16 +8,15 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 
-public class CharacterFrame extends JInternalFrame
-		implements ActionListener, MouseListener, ClipboardOwner {
+public class CharacterFrame extends JInternalFrame implements ActionListener, MouseListener, ClipboardOwner {
 
 	private static final long serialVersionUID = 1L;
 
-	KanjiDictionary parent;
+	private KanjiDictionary parent;
 
-	final static int DEFAULT_FONT_SIZE = 200;
-	int fontSize = DEFAULT_FONT_SIZE;
-	
+	private final static int DEFAULT_FONT_SIZE = 200;
+	private int fontSize = DEFAULT_FONT_SIZE;
+
 	public CharacterFrame(KanjiDictionary parent) {
 		super("Character",
 				false /* resizable */,
@@ -27,7 +26,7 @@ public class CharacterFrame extends JInternalFrame
 		this.parent = parent;
 	}
 
-	int codePoint = 0;
+	private int codePoint = 0;
 
 	public void updateFonts() {
 		if (codePoint != 0) {
@@ -35,14 +34,13 @@ public class CharacterFrame extends JInternalFrame
 		}
 	}
 
-	JLabel characterLabel;
-	
+	private JLabel characterLabel;
+
 	public void setCharacter(int codePoint) {
 		this.codePoint = codePoint;
 		JPanel panel = new JPanel(new BorderLayout());
 		{
-			JLabel label = new JLabel("U+"
-					+ Integer.toString(codePoint, 16).toUpperCase());
+			JLabel label = new JLabel("U+" + Integer.toString(codePoint, 16).toUpperCase());
 			label.setBorder(new EtchedBorder());
 			label.setHorizontalAlignment(JLabel.CENTER);
 			label.setFont(label.getFont().deriveFont((float)label.getFont().getSize() * 2));
@@ -83,14 +81,12 @@ public class CharacterFrame extends JInternalFrame
 			BoxLayout layout = new BoxLayout(panel2, BoxLayout.PAGE_AXIS);
 			panel2.setLayout(layout);
 			{
-				JLabel label = new JLabel("font name: "
-						+ font.getName());
+				JLabel label = new JLabel("font name: " + font.getName());
 				label.setHorizontalAlignment(JLabel.CENTER);
 				panel2.add(label);
 			}
 			{
-				JLabel label = new JLabel("font size: "
-						+ Integer.toString(fontSize) + "pt");
+				JLabel label = new JLabel("font size: " + Integer.toString(fontSize) + "pt");
 				label.setHorizontalAlignment(JLabel.CENTER);
 				panel2.add(label);
 			}
@@ -102,15 +98,12 @@ public class CharacterFrame extends JInternalFrame
 	}
 
 	public void actionPerformed(ActionEvent event) {
-		String sCommand = event.getActionCommand();
-		if (sCommand == null) {
+		String command = event.getActionCommand();
+		if (command == null) {
 			return;
 		}
-		if (sCommand.equals("copyImage")) {
-			Image image = new BufferedImage(
-					characterLabel.getWidth(),
-					characterLabel.getHeight(),
-					BufferedImage.TYPE_BYTE_GRAY);
+		if (command.equals("copyImage")) {
+			Image image = new BufferedImage(characterLabel.getWidth(), characterLabel.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
 			Color foreground = characterLabel.getForeground();
 			Color background = characterLabel.getBackground();
 			characterLabel.setForeground(Color.WHITE);
@@ -121,13 +114,13 @@ public class CharacterFrame extends JInternalFrame
 			Clipboard clipboard = getToolkit().getSystemClipboard();
 			clipboard.setContents(new ImageSelection(image), this);
 			JOptionPane.showMessageDialog(null, "copied image data to clipboard.");
-		} else if (sCommand.indexOf("copy") == 0) {
-			String s = sCommand.substring("copy".length());
+		} else if (command.indexOf("copy") == 0) {
+			String s = command.substring("copy".length());
 			Clipboard clipboard = getToolkit().getSystemClipboard();
 			StringSelection stringSelection = new StringSelection(s);
 			clipboard.setContents(stringSelection, this);
 			JOptionPane.showMessageDialog(null, "copied \"" + s + "\" to clipboard.");
-		} else if (sCommand.equals("changeSize")) {
+		} else if (command.equals("changeSize")) {
 			JPanel panel = new JPanel();
 			JLabel label = new JLabel("font size:");
 			panel.add(label);
@@ -135,8 +128,7 @@ public class CharacterFrame extends JInternalFrame
 			panel.add(sizeText);
 			label = new JLabel("pt");
 			panel.add(label);
-			switch (JOptionPane.showConfirmDialog(null, panel, "Change Font Size",
-					JOptionPane.OK_CANCEL_OPTION)) {
+			switch (JOptionPane.showConfirmDialog(null, panel, "Change Font Size", JOptionPane.OK_CANCEL_OPTION)) {
 			case JOptionPane.OK_OPTION:
 				try {
 					fontSize = Integer.parseInt(sizeText.getText());
@@ -210,13 +202,9 @@ public class CharacterFrame extends JInternalFrame
 				item.addActionListener(this);
 				menu.add(item);
 			}
-			menu.show(event.getComponent(),
-					event.getX(), event.getY());
+			menu.show(event.getComponent(), event.getX(), event.getY());
 		} else if (SwingUtilities.isLeftMouseButton(event)) {
-			ActionEvent actionEvent
-					= new ActionEvent(event.getSource(),
-					ActionEvent.ACTION_PERFORMED,
-					"copy" + new String(new int[] { codePoint }, 0, 1));
+			ActionEvent actionEvent = new ActionEvent(event.getSource(), ActionEvent.ACTION_PERFORMED, "copy" + new String(new int[] { codePoint }, 0, 1));
 			actionPerformed(actionEvent);
 		}
 	}
@@ -225,37 +213,38 @@ public class CharacterFrame extends JInternalFrame
 	public void mouseReleased(MouseEvent event) {
 	}
 	
-	int[] convertCodePoints(int codePoint) {
+	private int[] convertCodePoints(int codePoint) {
 		if (codePoint < 0x10000) {
 			return new int[] { codePoint };
+		} else {
+			return new int[] {
+					0xd800 + ((codePoint - 0x10000) >> 10),
+					0xdc00 + ((codePoint - 0x10000) & 0x3ff)
+			};
 		}
-		return new int[] {
-			0xd800 + ((codePoint - 0x10000) >> 10),
-			0xdc00 + ((codePoint - 0x10000) & 0x3ff)
-		};
 	}
-	
+
 	public void lostOwnership(Clipboard clipboard, Transferable transferable) {
 	}
 }
 
 
 class ImageSelection implements Transferable {
-	
-	Image image = null;
-	
+
+	private Image image = null;
+
 	public ImageSelection(Image image) {
 		this.image = image;
 	}
-	
+
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
 		return DataFlavor.imageFlavor.equals(flavor);
 	}
-	
+
 	public DataFlavor[] getTransferDataFlavors() {
 		return new DataFlavor[] { DataFlavor.imageFlavor };
 	}
-	
+
 	public Object getTransferData(DataFlavor flavor)
 			throws UnsupportedFlavorException {
 		if (DataFlavor.imageFlavor.equals(flavor)) {
@@ -263,7 +252,7 @@ class ImageSelection implements Transferable {
 		}
 		throw new UnsupportedFlavorException(flavor);
 	}
-	
+
 	public void lostOwnership(Clipboard clipboard, Transferable transferable) {
 		image = null;
 	}

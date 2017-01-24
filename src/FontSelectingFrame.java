@@ -7,20 +7,18 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 
-public class FontSelectingFrame
-		extends JInternalFrame
-		implements ActionListener {
+public class FontSelectingFrame extends JInternalFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
-	KanjiDictionary parent;
-	
-	JList cFontList;
-	String[] sCFonts;
-	JList jFontList;
-	String[] sJFonts;
-	JList aFontList;
-	String[] sAFonts;
+	private KanjiDictionary parent;
+
+	private JList cFontList;
+	private String[] sCFonts;
+	private JList jFontList;
+	private String[] sJFonts;
+	private JList aFontList;
+	private String[] sAFonts;
 
 	public FontSelectingFrame(KanjiDictionary parent) {
 		super("Font Selecting",
@@ -29,7 +27,7 @@ public class FontSelectingFrame
 				false /* maximizable */,
 				true /* iconifiable */);
 		this.parent = parent;
-		
+
 		JPanel panel = new JPanel();
 		GridBagLayout layout = new GridBagLayout();
 		panel.setLayout(layout);
